@@ -5,6 +5,7 @@ import os
 import random
 import time
 import colors
+import datetime
 
 os.system("cls")
 
@@ -18,7 +19,11 @@ def receive_messages(client):
             if not data:
                 break
             msg = data.decode("utf-8")
-            if "<<" in msg or ">>" in msg:
+            if msg.startswith("/pong"):
+                ping_time = datetime.datetime.now() - datetime.datetime.strptime(' '.join(msg.split(" ")[1:]), "%Y-%m-%d %H:%M:%S.%f")
+                ping_ms = ping_time.total_seconds() * 1000
+                print(colors.prGreen("Ping: " + str(round(ping_ms)) + " ms"))
+            elif "<<" in msg or ">>" in msg:
                 print(colors.prPurple(msg))
             elif "<" in msg and ">" in msg and msg.split("<")[1].split(">")[0]:
                 print(msg)
@@ -31,7 +36,7 @@ def receive_messages(client):
 def run_client():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    server_ip = "127.0.0.1"
+    server_ip = "0.0.0.0"
     server_port = 8001
     client.connect((server_ip, server_port))
 
