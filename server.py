@@ -57,6 +57,8 @@ def handle_client(client_socket, addr):
                         broadcast(f"*{currentUsers[addr]} {' '.join(request.split(' ')[1:])}")
                     elif request.startswith("/motd"):
                         client_socket.send(config['motd'].encode("utf-8"))
+                    elif request.startswith("/ping"):
+                        client_socket.send(f"/pong {datetime.datetime.now()}".encode("utf-8"))
                     else:
                         client_socket.send("Unknown command".encode("utf-8"))
 
@@ -69,13 +71,14 @@ def handle_client(client_socket, addr):
                     broadcast(msg)
             except Exception as e:
                 with open("log.txt", "a", encoding="utf-8") as file:
-                    file.write(f"{datetime.datetime.now()}|Error when handling client: {e}\n")
+                    file.write(f"{datetime.datetime.now()}|Error when handling message: {e}\n")
                 client_socket.send("The server actively rejected your message".encode("utf-8"))
 
     except Exception as e:
         with open("log.txt", "a", encoding="utf-8") as file:
             file.write(f"{datetime.datetime.now()}|Error when handling client: {e}\n")
         print(f"Error when hanlding client: {e}")
+        
     finally:
         client_socket.close()
         connectedClients.remove(client_socket)
@@ -84,11 +87,14 @@ def handle_client(client_socket, addr):
         print(f"Connection to client ({addr[0]}:{addr[1]}) closed")
 
 def broadcast(msg):
+    if len(connectedClients) <= 0:
+        return
     for client in connectedClients:
         try:
             client.send(msg.encode("utf-8"))
         except Exception as e:
             print(f"Error when broadcasting to client: {e}")
+            connectedClients.remove(client)
 
 def login_user(user, passw, addr):
     if user in users:
