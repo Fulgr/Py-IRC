@@ -10,3 +10,5 @@ The client connects to the Py-IRC server and logs in using dummy credentials so 
 ## Planned features
 - Channels
 - /join & /leave command
+- /list command which lists all channels
+- /help command
