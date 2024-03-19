@@ -12,3 +12,5 @@ The client connects to the Py-IRC server and logs in using dummy credentials so 
 - /join & /leave command
 - /list command which lists all channels
 - /help command
+
+node2.endelon-hosting.de:32995
