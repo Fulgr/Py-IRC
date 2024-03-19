@@ -4,6 +4,7 @@ import sys
 import os
 import random
 import time
+import colors
 
 os.system("cls")
 
@@ -16,15 +17,19 @@ def receive_messages(client):
             data = client.recv(1024)
             if not data:
                 break
-            print(data.decode("utf-8"))
+            msg = data.decode("utf-8")
+            if "<<" in msg or ">>" in msg:
+                print(colors.prYellow(msg))
+            else:
+                print(msg)
     except Exception as e:
-        print(f"Error: {e}")
+        print(colors.prRed(f"Error: {e}"))
 
 
 def run_client():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    server_ip = "0.0.0.0"
+    server_ip = "127.0.0.1"
     server_port = 8001
     client.connect((server_ip, server_port))
 
