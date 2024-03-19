@@ -36,7 +36,10 @@ def run_client():
         while True:
             msg = input()
             sys.stdout.write("\033[F")
-            client.send(msg.encode("utf-8")[:1024])
+            if msg == "/clear":
+                os.system("cls")
+            else:
+                client.send(msg.encode("utf-8")[:1024])
     except Exception as e:
         print(f"Error: {e}")
     finally:
