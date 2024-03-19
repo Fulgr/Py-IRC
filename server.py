@@ -67,10 +67,14 @@ def handle_client(client_socket, addr):
                     msg = f"<{currentUsers[addr]}> {request}"
                     print(msg)
                     broadcast(msg)
-            except:
+            except Exception as e:
+                with open("log.txt", "a", encoding="utf-8") as file:
+                    file.write(f"Error when handling client: {e}\n")
                 client_socket.send("The server actively rejected your message".encode("utf-8"))
 
     except Exception as e:
+        with open("log.txt", "a", encoding="utf-8") as file:
+            file.write(f"Error when handling client: {e}\n")
         print(f"Error when hanlding client: {e}")
     finally:
         client_socket.close()
