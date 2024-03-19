@@ -57,6 +57,8 @@ def handle_client(client_socket, addr):
                         broadcast(f"*{currentUsers[addr]} {' '.join(request.split(' ')[1:])}")
                     elif request.startswith("/motd"):
                         client_socket.send(config['motd'].encode("utf-8"))
+                    else:
+                        client_socket.send("Unknown command".encode("utf-8"))
 
                 elif not currentUsers[addr]:
                     client_socket.send("Please use \"/msg NickServ nick password\" to register your nick".encode("utf-8"))
