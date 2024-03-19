@@ -45,15 +45,15 @@ def handle_client(client_socket, addr):
                         print(f"Private message from {addr[0]}:{addr[1]}: {request}")
                         req = request.split(" ")
                         if req[1] == "NickServ":
-                            if loginUser(req[2], req[3], addr):
+                            if login_user(req[2], req[3], addr):
                                 client_socket.send("Login successful".encode("utf-8"))
                                 if client_socket not in connectedClients:
                                     connectedClients.append(client_socket)
                             else:
                                 client_socket.send("Login failed".encode("utf-8"))
                         else:
-                            sendDm(req[1], f"{currentUsers[addr]} >> {' '.join(req[2:])}")
-                            sendDm(currentUsers[addr], f"{req[1]} << {' '.join(req[2:])}")
+                            send_dm(req[1], f"{currentUsers[addr]} >> {' '.join(req[2:])}")
+                            send_dm(currentUsers[addr], f"{req[1]} << {' '.join(req[2:])}")
                     elif request.startswith("/me"):
                         broadcast(f"*{currentUsers[addr]} {' '.join(request.split(' ')[1:])}")
 
@@ -82,7 +82,7 @@ def broadcast(msg):
         except Exception as e:
             print(f"Error when broadcasting to client: {e}")
 
-def loginUser(user, passw, addr):
+def login_user(user, passw, addr):
     if user in users:
         if users[user] != passw or user in currentUsers.values():
             return False
@@ -103,7 +103,7 @@ def loginUser(user, passw, addr):
     currentUsers[addr] = user
     return True
 
-def sendDm(username, msg):
+def send_dm(username, msg):
     addr = ""
     for user in currentUsers:
         if currentUsers[user] == username:
