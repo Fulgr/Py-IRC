@@ -19,9 +19,11 @@ def receive_messages(client):
                 break
             msg = data.decode("utf-8")
             if "<<" in msg or ">>" in msg:
-                print(colors.prYellow(msg))
-            else:
+                print(colors.prPurple(msg))
+            elif "<" in msg and ">" in msg and msg.split("<")[1].split(">")[0]:
                 print(msg)
+            else:
+                print(colors.prYellow(msg))
     except Exception as e:
         print(colors.prRed(f"Error: {e}"))
 
