@@ -105,7 +105,6 @@ def login_user(user, passw, addr):
         json.dump(users, file, indent=4)
     if addr in currentUsers:
         broadcast(f"{currentUsers[addr]} has changed their nick to {user}")
-        del currentUsers[addr]
     else:
         broadcast(f"{user} has joined the chat")
     currentUsers[addr] = user
