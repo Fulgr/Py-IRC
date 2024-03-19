@@ -67,8 +67,15 @@ def run_client(server_ip, server_port):
 
 is_running = True
 while is_running:
+    os.system("cls")
     print(f"Connecting to {server_ip}:{server_port}")
-    output = run_client(server_ip, server_port)
-    is_running = output["is_running"]
-    server_ip = output["ip"]
-    server_port = output["port"]
+    try:
+        output = run_client(server_ip, server_port)
+        is_running = output["is_running"]
+        server_ip = output["ip"]
+        server_port = output["port"]
+    except Exception as e:
+        print(colors.prRed(f"Error: {e}"))
+        server_ip = input("Enter server IP: ")
+        server_port = int(input("Enter server port: "))
+        is_running = True
