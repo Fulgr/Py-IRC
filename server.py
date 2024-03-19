@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+import datetime
 
 with open("data/users.json", "r", encoding="utf-8") as file:
     users = json.load(file)
@@ -68,12 +69,12 @@ def handle_client(client_socket, addr):
                     broadcast(msg)
             except Exception as e:
                 with open("log.txt", "a", encoding="utf-8") as file:
-                    file.write(f"Error when handling client: {e}\n")
+                    file.write(f"{datetime.datetime.now()}|Error when handling client: {e}\n")
                 client_socket.send("The server actively rejected your message".encode("utf-8"))
 
     except Exception as e:
         with open("log.txt", "a", encoding="utf-8") as file:
-            file.write(f"Error when handling client: {e}\n")
+            file.write(f"{datetime.datetime.now()}|Error when handling client: {e}\n")
         print(f"Error when hanlding client: {e}")
     finally:
         client_socket.close()
