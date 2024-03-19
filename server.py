@@ -41,7 +41,6 @@ def handle_client(client_socket, addr):
                     if request.lower() == "/quit" or request == "":
                         break
                     elif request.startswith("/msg"):
-                        print(f"Private message from {addr[0]}:{addr[1]}: {request}")
                         req = request.split(" ")
                         if req[1] == "NickServ":
                             if login_user(req[2], req[3], addr):
@@ -80,6 +79,7 @@ def handle_client(client_socket, addr):
         client_socket.close()
         connectedClients.remove(client_socket)
         broadcast(f"{currentUsers[addr]} has left the chat")
+        del currentUsers[addr]
         print(f"Connection to client ({addr[0]}:{addr[1]}) closed")
 
 def broadcast(msg):
@@ -105,6 +105,7 @@ def login_user(user, passw, addr):
         json.dump(users, file, indent=4)
     if addr in currentUsers:
         broadcast(f"{currentUsers[addr]} has changed their nick to {user}")
+        del currentUsers[addr]
     else:
         broadcast(f"{user} has joined the chat")
     currentUsers[addr] = user
