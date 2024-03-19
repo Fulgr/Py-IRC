@@ -3,6 +3,7 @@ import threading
 import sys
 import os
 import random
+import time
 
 os.system("cls")
 
@@ -32,6 +33,7 @@ def run_client():
 
     try:
         client.send("/motd".encode("utf-8"))
+        time.sleep(0.2)
         client.send(f"/msg NickServ {username} {password}".encode("utf-8"))
         while True:
             msg = input()
