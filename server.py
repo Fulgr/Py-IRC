@@ -32,7 +32,6 @@ def run_server():
 
 def handle_client(client_socket, addr):
     try:
-        client_socket.send("Welcome to the chat server".encode("utf-8"))
         client_socket.send("Please use \"/msg NickServ nick password\" to login\"".encode("utf-8"))
         while True:
             try:
@@ -56,6 +55,8 @@ def handle_client(client_socket, addr):
                             send_dm(currentUsers[addr], f"{req[1]} << {' '.join(req[2:])}")
                     elif request.startswith("/me"):
                         broadcast(f"*{currentUsers[addr]} {' '.join(request.split(' ')[1:])}")
+                    elif request.startswith("/motd"):
+                        client_socket.send(config['motd'].encode("utf-8"))
 
                 elif not currentUsers[addr]:
                     client_socket.send("Please use \"/msg NickServ nick password\" to register your nick".encode("utf-8"))

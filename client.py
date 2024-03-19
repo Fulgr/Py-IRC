@@ -31,6 +31,7 @@ def run_client():
     receive_thread.start()
 
     try:
+        client.send("/motd".encode("utf-8"))
         client.send(f"/msg NickServ {username} {password}".encode("utf-8"))
         while True:
             msg = input()
