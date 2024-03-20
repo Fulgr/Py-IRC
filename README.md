@@ -8,9 +8,5 @@ The Py-IRC server creates a socket where clients can connect too, it has a list 
 ### Client
 The client connects to the Py-IRC server and logs in using dummy credentials so it can see messages incoming immediately, and it continiously awaits for new messages to print and prompts the user to send their own message in a input and when that is submitted the client sends the message to the server which broadcasts the message to all other active connections.
 ## Planned features
-- Channels
-- /join & /leave command
-- /list command which lists all channels
-- /help command
 
 node2.endelon-hosting.de:32995
