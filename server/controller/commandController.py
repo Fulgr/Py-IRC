@@ -73,6 +73,8 @@ def dm(client, cmd):
     if len(msg) > 0:
         client.dm(client, nick, msg)
         client.send(f"{nick} << {msg}")
+    else:
+        client.send("Invalid message")
 
 def whois(client, cmd, clients):
     nick = cmd.split(' ')[1]
