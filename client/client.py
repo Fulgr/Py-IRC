@@ -28,7 +28,7 @@ def receive_messages(client):
                 print(colors.prGreen("Ping: " + str(round(ping_ms)) + " ms"))
             elif "<<" in msg or ">>" in msg:
                 print(colors.prPurple(msg))
-            elif "<" in msg and ">" in msg and msg.split("<")[1].split(">")[0]:
+            elif ("<" in msg and ">" in msg and msg.split("<")[1].split(">")[0]) or (msg[0]=="*"):
                 print(msg)
             else:
                 print(colors.prYellow(msg))
@@ -46,7 +46,7 @@ def run_client(server_ip, server_port):
     try:
         client.send("/motd".encode("utf-8"))
         time.sleep(0.2)
-        client.send(f"/msg NickServ {username} {password}".encode("utf-8"))
+        client.send(f"/nick {username}".encode("utf-8"))
         while True:
             msg = input()
             sys.stdout.write("\033[F")
