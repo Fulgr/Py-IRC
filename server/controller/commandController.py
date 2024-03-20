@@ -1,3 +1,4 @@
+from datetime import datetime
 
 def check_command(cmd, client, clients):
     if cmd.startswith('/'):
@@ -26,6 +27,8 @@ def check_command(cmd, client, clients):
             ignore(client, cmd, clients)
         elif cmd.startswith('/help'):
             help(client)
+        elif cmd.startswith('/ping'):
+            ping(client)
         else:
             client.send("Invalid command")
         return True
@@ -130,3 +133,6 @@ def help(client):
                 "/leave - Leave the current channel\n"
                 "/quit - Quit the server\n"
                 "/help - Display this help message")
+
+def ping(client):
+    client.send("/pong " + str(datetime.now().strftime("%Y:%m:%d:%H:%M:%S:%f")))

@@ -23,7 +23,7 @@ def receive_messages(client):
                 break
             msg = data.decode("utf-8")
             if msg.startswith("/pong"):
-                ping_time = datetime.datetime.now() - datetime.datetime.strptime(' '.join(msg.split(" ")[1:]), "%Y-%m-%d %H:%M:%S.%f")
+                ping_time = datetime.datetime.now() - datetime.datetime.strptime(' '.join(msg.split(" ")[1:]), "%Y:%m:%d:%H:%M:%S:%f")
                 ping_ms = ping_time.total_seconds() * 1000
                 print(colors.prGreen("Ping: " + str(round(ping_ms)) + " ms"))
             elif "<<" in msg or ">>" in msg:
