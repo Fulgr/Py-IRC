@@ -130,6 +130,8 @@ def help(client):
                 "/msg <nick> <message> - Send a private message\n"
                 "/whois <nick> - Get information about a user\n"
                 "/away <message> - Set an away message\n"
+                "/ignore <nick> - Ignore a user\n"
+                "/ping - Ping the server\n"
                 "/leave - Leave the current channel\n"
                 "/quit - Quit the server\n"
                 "/help - Display this help message")
