@@ -70,8 +70,9 @@ def dm(client, cmd):
     parts = cmd.split(' ')
     nick = parts[1]
     msg = ' '.join(parts[2:])
-    client.dm(client, nick, msg)
-    client.send(f"{nick} << {msg}")
+    if len(msg) > 0:
+        client.dm(client, nick, msg)
+        client.send(f"{nick} << {msg}")
 
 def whois(client, cmd, clients):
     nick = cmd.split(' ')[1]
