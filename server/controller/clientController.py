@@ -53,6 +53,9 @@ def handle_client(client_socket, addr):
         while True:
             try:
                 msg = client.recv(client.buffer_size)
+                if not msg:
+                    client.leave()
+                    break
                 if not msg.strip() == "":
                     cmd = check_command(msg, client, clients)
                     if not cmd:
