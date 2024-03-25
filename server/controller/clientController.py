@@ -1,6 +1,7 @@
 from controller.errorController import log_error
 from controller.configController import get_config
 from controller.commandController import check_command
+import random
 
 config = get_config()
 clients = []
@@ -9,7 +10,7 @@ class Client:
     def __init__(self, client_socket, addr, nick):
         self.client_socket = client_socket
         self.addr = addr
-        self.nick = ':'.join(map(str, nick))
+        self.nick = nick
         self.buffer_size = config['buffer_size']
         self.channel = config['default_channel']
         self.away = ""
@@ -46,7 +47,7 @@ class Client:
 
 def handle_client(client_socket, addr):
     try:
-        client = Client(client_socket, addr, addr)
+        client = Client(client_socket, addr, nick=f"Guest{random.randint(1, 9999)}")
         clients.append(client)
         broadcast(client, f"{client.nick} has joined #{client.channel}")
         while True:

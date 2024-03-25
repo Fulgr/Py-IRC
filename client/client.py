@@ -5,8 +5,6 @@ import time
 import datetime
 import tkinter as tk
 
-username = "Guest" + str(random.randint(1, 9999))
-
 server_ip = "127.0.0.1"
 server_port = 8001
 
@@ -34,7 +32,7 @@ class ChatClientGUI:
         receive_thread.start()
 
         self.text_area.insert(tk.END, f"Connected to {server_ip}:{server_port}")
-        self.send_message(f"/nick {username}")
+        self.send_message(f"/motd")
 
 
     def close_connection(self):

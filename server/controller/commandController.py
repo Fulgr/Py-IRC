@@ -39,6 +39,10 @@ def motd(client):
     client.send("Welcome to the server!")
 
 def nick(client, cmd, clients):
+    splitmsg = cmd.split(' ')
+    if len(splitmsg) < 2:
+        client.send("Invalid nick")
+        return
     nick = cmd.split(' ')[1]
     if len(nick) > 0 and len(nick) <= 16 and nick not in [c.nick for c in clients]:
         old_nick = client.nick
@@ -48,6 +52,10 @@ def nick(client, cmd, clients):
         client.send("Invalid nick")
 
 def join(client, cmd):
+    splitmsg = cmd.split(' ')
+    if len(splitmsg) < 2:
+        client.send("Invalid channel name")
+        return
     channel = cmd.split(' ')[1]
     if channel[0] == '#':
         channel = channel[1:]
@@ -80,6 +88,10 @@ def dm(client, cmd):
         client.send("Invalid message")
 
 def whois(client, cmd, clients):
+    splitmsg = cmd.split(' ')
+    if len(splitmsg) < 2:
+        client.send("Invalid nick")
+        return
     nick = cmd.split(' ')[1]
     for c in clients:
         if c.nick == nick:
@@ -108,6 +120,10 @@ def quit(client):
     client.leave()
 
 def ignore(client, cmd, clients):
+    splitmsg = cmd.split(' ')
+    if len(splitmsg) < 2:
+        client.send("Invalid nick")
+        return
     nick = cmd.split(' ')[1]
     for c in clients:
         if c.nick == nick:
