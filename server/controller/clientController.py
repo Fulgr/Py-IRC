@@ -53,12 +53,13 @@ def handle_client(client_socket, addr):
         while True:
             try:
                 msg = client.recv(client.buffer_size)
-                cmd = check_command(msg, client, clients)
-                if not cmd:
-                    msg = f"<{client.nick}> {msg}"
-                    client.say(msg)
-                elif cmd != True:
-                    client.say(cmd)
+                if not msg.strip() == "":
+                    cmd = check_command(msg, client, clients)
+                    if not cmd:
+                        msg = f"<{client.nick}> {msg}"
+                        client.say(msg)
+                    elif cmd != True:
+                        client.say(cmd)
             except Exception as e:
                 log_error(e)
                 client.leave()
