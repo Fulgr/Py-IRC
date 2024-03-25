@@ -95,6 +95,8 @@ class ChatClientGUI:
             self.text_area.insert(tk.END, '\n' + "Client commands:")
             self.text_area.insert(tk.END, '\n' + "/clear - Clear chat")
             self.text_area.insert(tk.END, '\n' + "/chans - Updates the channel sidebar")
+            self.text_area.insert(tk.END, '\n' + "/conn <ip>:<port> - Connect to a server")
+            self.text_area.insert(tk.END, '\n' + "/networks - List available networks")
         elif msg.startswith("/conn"):
             try:
                 self.text_area.delete('1.0', tk.END)
