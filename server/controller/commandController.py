@@ -36,7 +36,7 @@ def check_command(cmd, client, clients):
         return False
     
 def motd(client):
-    client.send("Welcome to the server!")
+    client.send("Welcome to our Py-IRC network!\nPlease type /help for a list of commands\nEnjoy your stay")
 
 def nick(client, cmd, clients):
     splitmsg = cmd.split(' ')
