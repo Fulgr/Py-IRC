@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 def check_command(cmd, client, clients):
     if cmd.startswith('/'):
@@ -12,7 +13,7 @@ def check_command(cmd, client, clients):
         elif cmd.startswith('/me'):
             me(client, cmd)
         elif cmd.startswith('/list'):
-            channels(client, clients)
+            channels(client, clients, cmd)
         elif cmd.startswith('/msg') or cmd.startswith('/query'):
             dm(client, cmd)
         elif cmd.startswith('/who') or cmd.startswith('/whois'):
@@ -69,9 +70,15 @@ def join(client, cmd):
 def me(client, cmd):
     client.say(f"* {client.nick} {cmd[4:]}")
 
-def channels(client, clients):
+def channels(client, clients, cmd):
     chans = [c.channel for c in clients]
     chans = list(dict.fromkeys(chans))
+    splitmsg = cmd.split(' ')
+    if len(splitmsg) > 1:
+        if splitmsg[1] == "json":
+            response = json.dumps(chans)
+            client.send(f"/channels {response}")
+            return
     msg = "Channels: "
     for c in chans:
         msg += f"#{c} "
