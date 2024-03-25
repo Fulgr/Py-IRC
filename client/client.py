@@ -19,7 +19,11 @@ class ChatClientGUI:
 
         self.input_field.bind("<Return>", self.send_message)
 
-        self.connect_to_server()
+        try:
+            self.connect_to_server()
+        except Exception as e:
+            self.text_area.insert(tk.END, f"Error: {e}")
+            self.text_area.insert(tk.END, f"\nPlease enter a IP using /conn <ip>:<port>\nFor avaible networks use /networks")
 
     def connect_to_server(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,6 +75,10 @@ class ChatClientGUI:
             except Exception as e:
                 self.text_area.insert(tk.END, '\n' + f"Error: {e}")
                 raise Exception("Invalid connection string")
+        elif msg.startswith("/networks"):
+            self.text_area.insert(tk.END, '\n' + "Available networks:")
+            self.text_area.insert(tk.END, '\n' + "127.0.0.1:8001 - Localhost")
+            self.text_area.insert(tk.END, '\n' + "node2.endelon-hosting.de:34055 - Endolon test server")
         else:
             self.client.send(msg.encode("utf-8")[:1024])
 
