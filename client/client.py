@@ -4,9 +4,27 @@ import datetime
 import tkinter as tk
 import json
 import time
+import os
 
-server_ip = "127.0.0.1"
-server_port = 8001
+initial_commands = ["/list json", "/motd"]
+
+appdatapath = os.getenv('APPDATA') + "\\VelocityClient"
+if not os.path.exists(appdatapath):
+    os.makedirs(appdatapath)
+    with open(appdatapath + "\\config.json", "w") as f:
+        f.write('{"theme": "dark"}')
+os.chdir(appdatapath)
+
+with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
+    file = json.load(f)
+    if "theme" not in file:
+        file["theme"] = "dark"
+    if "autonick" in file:
+        initial_commands.append(f"/nick {file['autonick']}")
+
+
+server_ip = "node2.endelon-hosting.de"
+server_port = 34055
 
 class ChatClientGUI:
     def __init__(self, master):
@@ -14,6 +32,8 @@ class ChatClientGUI:
         self.master.title("Velocity Client")
 
         color = "#191b1d"
+        self.channel_bg = "#373737"
+        self.channel_fg = "lightgreen"
 
         self.sidebar = tk.Frame(master, bg=color)
         self.sidebar.pack(side=tk.LEFT, fill=tk.Y, expand=False)
@@ -27,7 +47,7 @@ class ChatClientGUI:
         self.send_button = tk.Button(master, text="►", bg=color, fg="lightgreen", font=("Arial", 12), command=self.send_message)
         self.send_button.pack(side=tk.LEFT, fill=tk.X, expand=False)
 
-        self.button = tk.Button(self.sidebar, text="#general", bg=color, fg="lightgreen", font=("Arial", 8), command=lambda: self.send_message("/join general"))
+        self.button = tk.Button(self.sidebar, text="#general", bg=self.channel_bg, fg=self.channel_fg, font=("Arial", 8), command=lambda: self.send_message("/join general"))
         self.button.pack(fill=tk.X)
 
         self.current_channel = "general"
@@ -36,9 +56,59 @@ class ChatClientGUI:
 
         try:
             self.connect_to_server()
+            with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
+                file = json.load(f)
+            self.change_theme(file["theme"])
         except Exception as e:
             self.text_area.insert(tk.END, f"Error: {e}")
-            self.text_area.insert(tk.END, f"\nPlease enter a IP using /conn <ip>:<port>\nFor avaible networks use /networks")
+            self.text_area.insert(tk.END, f"Please enter a IP using /conn <ip>:<port>\nFor avaible networks use /networks")
+
+    def change_theme(self, theme):
+        if theme == "dark":
+            self.master.configure(bg="#191b1d")
+            self.text_area.configure(bg="#191b1d", fg="white")
+            self.input_field.configure(bg="#191b1d", fg="white")
+            self.send_button.configure(bg="#191b1d", fg="lightgreen")
+            self.sidebar.configure(bg="#191b1d")
+            for widget in self.sidebar.winfo_children():
+                widget.configure(bg="#373737", fg="lightgreen")
+            self.channel_bg = "#373737"
+            self.channel_fg = "lightgreen"
+        elif theme == "light":
+            self.master.configure(bg="white")
+            self.text_area.configure(bg="white", fg="black")
+            self.input_field.configure(bg="white", fg="black")
+            self.send_button.configure(bg="white", fg="black")
+            self.sidebar.configure(bg="white")
+            for widget in self.sidebar.winfo_children():
+                widget.configure(bg="lightgrey", fg="black")
+            self.channel_bg = "lightgrey"
+            self.channel_fg = "black"
+        elif theme == "hacker":
+            self.master.configure(bg="#191b1d")
+            self.text_area.configure(bg="#191b1d", fg="lightgreen")
+            self.input_field.configure(bg="#191b1d", fg="lightgreen")
+            self.send_button.configure(bg="#191b1d", fg="lightgreen")
+            self.sidebar.configure(bg="#191b1d")
+            for widget in self.sidebar.winfo_children():
+                widget.configure(bg="#191b1d", fg="lightgreen")
+            self.channel_bg = "#373737"
+            self.channel_fg = "lightgreen"
+        elif theme == "purple":
+            self.master.configure(bg="#5c3c92")
+            self.text_area.configure(bg="#5c3c92", fg="white")
+            self.input_field.configure(bg="#5c3c92", fg="white")
+            self.send_button.configure(bg="#5c3c92", fg="white")
+            self.sidebar.configure(bg="#5c3c92")
+            for widget in self.sidebar.winfo_children():
+                widget.configure(bg="#5c3c92", fg="white")
+            self.channel_bg = "#5c3c92"
+            self.channel_fg = "white"
+
+    def send_initial_commands(self):
+        for command in initial_commands:
+            self.client.send(command.encode("utf-8"))
+            time.sleep(0.5)
 
     def connect_to_server(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,14 +119,14 @@ class ChatClientGUI:
         receive_thread.start()
 
         self.text_area.insert(tk.END, f"Connected to {server_ip}:{server_port}\nPlease use /lhelp for a list of client commands\n")
-        self.send_message("/list json")
-
 
     def close_connection(self):
         self.client.close()
 
     def receive_messages(self):
         try:
+            initial_messages_thread = threading.Thread(target=self.send_initial_commands)
+            initial_messages_thread.start()
             while True:
                 data = self.client.recv(1024)
                 if not data:
@@ -73,7 +143,7 @@ class ChatClientGUI:
                     for widget in self.sidebar.winfo_children():
                         widget.destroy()
                     for chan in chans:
-                        button = tk.Button(self.sidebar, text=f"#{chan}", bg="#373737", fg="lightgreen", font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
+                        button = tk.Button(self.sidebar, text=f"#{chan}", bg=self.channel_bg, fg=self.channel_fg, font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
                         button.pack(fill=tk.X)
                 else:
                     self.text_area.insert(tk.END,'\n' +  msg)
@@ -106,6 +176,9 @@ class ChatClientGUI:
             self.text_area.insert(tk.END, '\n' + "/chans - Updates the channel sidebar")
             self.text_area.insert(tk.END, '\n' + "/conn <ip>:<port> - Connect to a server")
             self.text_area.insert(tk.END, '\n' + "/networks - List available networks")
+            self.text_area.insert(tk.END, '\n' + "/themes - List available themes")
+            self.text_area.insert(tk.END, '\n' + "/theme <theme> - Change theme")
+            self.text_area.insert(tk.END, '\n' + "/autonick <nick> - Set a default nickname")
         elif msg.startswith("/conn"):
             try:
                 self.text_area.delete('1.0', tk.END)
@@ -121,6 +194,34 @@ class ChatClientGUI:
             self.text_area.insert(tk.END, '\n' + "Available networks:")
             self.text_area.insert(tk.END, '\n' + "127.0.0.1:8001 - Localhost")
             self.text_area.insert(tk.END, '\n' + "node2.endelon-hosting.de:34055 - Endolon test server")
+        elif msg.startswith("/themes"):
+            self.text_area.insert(tk.END, '\n' + "Available themes:")
+            self.text_area.insert(tk.END, '\n' + "dark - Dark theme")
+            self.text_area.insert(tk.END, '\n' + "light - Light theme")
+            self.text_area.insert(tk.END, '\n' + "hacker - Hacker theme")
+            self.text_area.insert(tk.END, '\n' + "purple - Purple theme")
+            self.text_area.insert(tk.END, '\n' + "To change theme use /theme <theme>")
+        elif msg.startswith("/theme"):
+            splitmsg = msg.split(' ')
+            if len(splitmsg) < 2:
+                self.text_area.insert(tk.END, '\n' + "Invalid theme")
+                return
+            with open(f"{appdatapath}\\config.json", "r", encoding="utf-8") as f:
+                file = json.load(f)
+            file["theme"] = splitmsg[1]
+            with open(f"{appdatapath}\\config.json", "w", encoding="utf-8") as f:
+                json.dump(file, f)
+            self.text_area.insert(tk.END, '\n' + f"Theme set to {splitmsg[1]}")
+            self.change_theme(splitmsg[1])
+        elif msg.startswith("/autonick"):
+            with open(f"{appdatapath}\\config.json", "r", encoding="utf-8") as f:
+                file = json.load(f)
+            if len(msg.split(" ")) < 2:
+                del file["autonick"]
+            else:
+                file["autonick"] = ' '.join(msg.split(" ")[1:])
+            with open(f"{appdatapath}\\config.json", "w", encoding="utf-8") as f:
+                json.dump(file, f)
         else:
             self.client.send(msg.encode("utf-8")[:1024])
 
