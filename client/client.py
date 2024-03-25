@@ -11,7 +11,7 @@ server_ip = "127.0.0.1"
 server_port = 8001
 
 class ChatClientGUI:
-    def __init__(self, master):
+    def __init__(self, master, server_ip, server_port):
         self.master = master
         self.master.title("Velocity Client")
 
@@ -33,7 +33,12 @@ class ChatClientGUI:
         receive_thread.daemon = True
         receive_thread.start()
 
+        self.text_area.insert(tk.END, f"Connected to {server_ip}:{server_port}")
         self.send_message(f"/nick {username}")
+
+
+    def close_connection(self):
+        self.client.close()
 
     def receive_messages(self):
         try:
@@ -56,15 +61,26 @@ class ChatClientGUI:
         if not self.input_field.get() and event:
             self.client.send(event.encode("utf-8")[:1024])
         msg = self.input_field.get()
+        self.input_field.delete(0, tk.END)
         if msg == "/clear":
             self.text_area.delete('1.0', tk.END)
+        elif msg.startswith("/conn"):
+            try:
+                self.text_area.delete('1.0', tk.END)
+                self.close_connection()
+                global server_ip, server_port
+                server_ip = msg.split(" ")[1].split(":")[0]
+                server_port = int(msg.split(" ")[1].split(":")[1])
+                self.connect_to_server()
+            except Exception as e:
+                self.text_area.insert(tk.END, '\n' + f"Error: {e}")
+                raise Exception("Invalid connection string")
         else:
             self.client.send(msg.encode("utf-8")[:1024])
-        self.input_field.delete(0, tk.END)
 
 def run_gui():
     root = tk.Tk()
-    app = ChatClientGUI(root)
+    app = ChatClientGUI(root, server_ip, server_port)
     root.mainloop()
 
 run_gui()
