@@ -10,12 +10,13 @@ class ChatClientGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Velocity Client")
+        self.master.configure(bg="black")
 
-        self.text_area = tk.Text(master)
+        self.text_area = tk.Text(master, bg="black", fg="yellow", font=("Arial", 12))
         self.text_area.pack(fill=tk.BOTH, expand=True)
 
-        self.input_field = tk.Entry(master)
-        self.input_field.pack(fill=tk.X)
+        self.input_field = tk.Entry(master, bg="gray", fg="lightgreen", font=("Arial", 12))
+        self.input_field.pack(fill=tk.X, expand=True, ipady=7)
 
         self.input_field.bind("<Return>", self.send_message)
 
@@ -34,7 +35,7 @@ class ChatClientGUI:
         receive_thread.start()
 
         self.text_area.insert(tk.END, f"Connected to {server_ip}:{server_port}")
-        self.send_message(f"/motd")
+        self.send_message("/motd")
 
 
     def close_connection(self):
@@ -59,6 +60,9 @@ class ChatClientGUI:
 
     def send_message(self, event=None):
         msg = self.input_field.get()
+        if event == "/motd":
+            self.client.send("/motd".encode("utf-8"))
+            return
         if not msg:
             return
         self.input_field.delete(0, tk.END)
