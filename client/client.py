@@ -54,9 +54,9 @@ class ChatClientGUI:
             print(f"Error: {e}")
 
     def send_message(self, event=None):
-        if not self.input_field.get() and event:
-            self.client.send(event.encode("utf-8")[:1024])
         msg = self.input_field.get()
+        if not msg:
+            return
         self.input_field.delete(0, tk.END)
         if msg == "/clear":
             self.text_area.delete('1.0', tk.END)
