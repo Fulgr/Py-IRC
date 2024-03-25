@@ -7,7 +7,7 @@ server_ip = "127.0.0.1"
 server_port = 8001
 
 class ChatClientGUI:
-    def __init__(self, master, server_ip, server_port):
+    def __init__(self, master):
         self.master = master
         self.master.title("Velocity Client")
 
@@ -76,7 +76,7 @@ class ChatClientGUI:
 
 def run_gui():
     root = tk.Tk()
-    app = ChatClientGUI(root, server_ip, server_port)
+    app = ChatClientGUI(root)
     root.mainloop()
 
 run_gui()
