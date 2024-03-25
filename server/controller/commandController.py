@@ -1,6 +1,8 @@
 from datetime import datetime
 
 def check_command(cmd, client, clients):
+    if not cmd:
+        return False
     if cmd.startswith('/'):
         print(f"{client.addr}: {cmd}")
         if cmd.startswith('/motd'):
