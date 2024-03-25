@@ -61,7 +61,7 @@ class ChatClientGUI:
             self.change_theme(file["theme"])
         except Exception as e:
             self.text_area.insert(tk.END, f"Error: {e}")
-            self.text_area.insert(tk.END, f"Please enter a IP using /conn <ip>:<port>\nFor avaible networks use /networks")
+            self.text_area.insert(tk.END, f"Please enter a IP using /conn <ip>:<port>\nFor available networks use /networks")
 
     def change_theme(self, theme):
         if theme == "dark":
@@ -94,15 +94,15 @@ class ChatClientGUI:
                 widget.configure(bg="#191b1d", fg="lightgreen")
             self.channel_bg = "#373737"
             self.channel_fg = "lightgreen"
-        elif theme == "purple":
-            self.master.configure(bg="#5c3c92")
-            self.text_area.configure(bg="#5c3c92", fg="white")
-            self.input_field.configure(bg="#5c3c92", fg="white")
-            self.send_button.configure(bg="#5c3c92", fg="white")
-            self.sidebar.configure(bg="#5c3c92")
+        elif theme == "custom":
+            self.master.configure(bg="black")
+            self.text_area.configure(bg="black", fg="white")
+            self.input_field.configure(bg="black", fg="white")
+            self.send_button.configure(bg="black", fg="white")
+            self.sidebar.configure(bg="black")
             for widget in self.sidebar.winfo_children():
-                widget.configure(bg="#5c3c92", fg="white")
-            self.channel_bg = "#5c3c92"
+                widget.configure(bg="black", fg="white")
+            self.channel_bg = "black"
             self.channel_fg = "white"
 
     def send_initial_commands(self):
@@ -171,14 +171,14 @@ class ChatClientGUI:
             self.client.send("/list json".encode("utf-8"))
             return
         elif msg == "/lhelp":
-            self.text_area.insert(tk.END, '\n' + "Client commands:")
+            self.text_area.insert(tk.END, '\n\n' + "Client commands:")
             self.text_area.insert(tk.END, '\n' + "/clear - Clear chat")
             self.text_area.insert(tk.END, '\n' + "/chans - Updates the channel sidebar")
             self.text_area.insert(tk.END, '\n' + "/conn <ip>:<port> - Connect to a server")
             self.text_area.insert(tk.END, '\n' + "/networks - List available networks")
             self.text_area.insert(tk.END, '\n' + "/themes - List available themes")
             self.text_area.insert(tk.END, '\n' + "/theme <theme> - Change theme")
-            self.text_area.insert(tk.END, '\n' + "/autonick <nick> - Set a default nickname")
+            self.text_area.insert(tk.END, '\n' + "/autonick <nick> - Set a default nickname\n")
         elif msg.startswith("/conn"):
             try:
                 self.text_area.delete('1.0', tk.END)
@@ -191,16 +191,16 @@ class ChatClientGUI:
                 self.text_area.insert(tk.END, '\n' + f"Error: {e}")
                 raise Exception("Invalid connection string")
         elif msg.startswith("/networks"):
-            self.text_area.insert(tk.END, '\n' + "Available networks:")
+            self.text_area.insert(tk.END, '\n\n' + "Available networks:")
             self.text_area.insert(tk.END, '\n' + "127.0.0.1:8001 - Localhost")
-            self.text_area.insert(tk.END, '\n' + "node2.endelon-hosting.de:34055 - Endolon test server")
+            self.text_area.insert(tk.END, '\n' + "node2.endelon-hosting.de:34055 - Endolon test server\n")
         elif msg.startswith("/themes"):
-            self.text_area.insert(tk.END, '\n' + "Available themes:")
+            self.text_area.insert(tk.END, '\n\n' + "Available themes:")
             self.text_area.insert(tk.END, '\n' + "dark - Dark theme")
             self.text_area.insert(tk.END, '\n' + "light - Light theme")
             self.text_area.insert(tk.END, '\n' + "hacker - Hacker theme")
-            self.text_area.insert(tk.END, '\n' + "purple - Purple theme")
-            self.text_area.insert(tk.END, '\n' + "To change theme use /theme <theme>")
+            self.text_area.insert(tk.END, '\n' + "custom - Custom theme")
+            self.text_area.insert(tk.END, '\n' + "To change theme use /theme <theme>\n")
         elif msg.startswith("/theme"):
             splitmsg = msg.split(' ')
             if len(splitmsg) < 2:
