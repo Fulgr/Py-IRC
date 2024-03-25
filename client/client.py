@@ -107,7 +107,7 @@ class ChatClientGUI:
 
     def send_initial_commands(self):
         for command in initial_commands:
-            self.client.send(command.encode("utf-8"))
+            self.client.send(command.encode("utf-8")[:1024])
             time.sleep(0.5)
 
     def connect_to_server(self):
@@ -165,11 +165,33 @@ class ChatClientGUI:
                 self.text_area.insert(tk.END, '\n' + "Invalid channel")
                 return
             self.current_channel = splitmsg[1]
+        elif msg.startswith("/msg"):
+            splitmsg = msg.split(' ')
+            if len(splitmsg) < 3:
+                self.text_area.insert(tk.END, '\n' + "Invalid message")
+                return
+            self.current_channel = splitmsg[1]
+            with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
+                file = json.load(f)
+            file['recentcontact'] = splitmsg[1]
+            with open(f"{appdatapath}/config.json", "w", encoding="utf-8") as f:
+                json.dump(file, f)
         if msg == "/clear":
             self.text_area.delete('1.0', tk.END)
         elif msg == "/chans":
-            self.client.send("/list json".encode("utf-8"))
+            self.client.send("/list json".encode("utf-8")[:1024])
             return
+        elif msg.startswith("/r"):
+            splitmsg = msg.split(' ')
+            if len(splitmsg) < 2:
+                self.text_area.insert(tk.END, '\n' + "Invalid message")
+                return
+            with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
+                file = json.load(f)
+            if "recentcontact" not in file:
+                self.text_area.insert(tk.END, '\n' + "No recent contact")
+                return
+            self.client.send(f"/msg {file['recentcontact']} {' '.join(splitmsg[1:])}".encode("utf-8")[:1024])
         elif msg == "/lhelp":
             self.text_area.insert(tk.END, '\n\n' + "Client commands:")
             self.text_area.insert(tk.END, '\n' + "/clear - Clear chat")
