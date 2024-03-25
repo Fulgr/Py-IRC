@@ -12,22 +12,25 @@ class ChatClientGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Velocity Client")
-        self.master.configure(bg="black")
 
-        self.sidebar = tk.Frame(master, bg="black")
+        color = "#191b1d"
+
+        self.sidebar = tk.Frame(master, bg=color)
         self.sidebar.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
-        self.text_area = tk.Text(master, bg="black", fg="white", font=("Arial", 12), cursor="arrow")
+        self.text_area = tk.Text(master, bg=color, fg="white", font=("Arial", 12), cursor="arrow")
         self.text_area.pack(fill=tk.BOTH, expand=True)
 
-        self.input_field = tk.Entry(master, bg="black", fg="white", font=("Arial", 12), cursor="tcross")
+        self.input_field = tk.Entry(master, bg=color, fg="white", font=("Arial", 12), cursor="tcross")
         self.input_field.pack(side=tk.LEFT, fill=tk.X, expand=True, ipadx=5, ipady=5)
 
-        self.send_button = tk.Button(master, text="►", bg="black", fg="lightgreen", font=("Arial", 12), command=self.send_message)
+        self.send_button = tk.Button(master, text="►", bg=color, fg="lightgreen", font=("Arial", 12), command=self.send_message)
         self.send_button.pack(side=tk.LEFT, fill=tk.X, expand=False)
 
-        self.button = tk.Button(self.sidebar, text="#general", bg="black", fg="lightgreen", font=("Arial", 8), command=lambda: self.send_message("/join general"))
+        self.button = tk.Button(self.sidebar, text="#general", bg=color, fg="lightgreen", font=("Arial", 8), command=lambda: self.send_message("/join general"))
         self.button.pack(fill=tk.X)
+
+        self.current_channel = "general"
 
         self.input_field.bind("<Return>", self.send_message)
 
@@ -70,7 +73,7 @@ class ChatClientGUI:
                     for widget in self.sidebar.winfo_children():
                         widget.destroy()
                     for chan in chans:
-                        button = tk.Button(self.sidebar, text=f"#{chan}", bg="black", fg="lightgreen", font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
+                        button = tk.Button(self.sidebar, text=f"#{chan}", bg="#373737", fg="lightgreen", font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
                         button.pack(fill=tk.X)
                 else:
                     self.text_area.insert(tk.END,'\n' +  msg)
@@ -86,6 +89,12 @@ class ChatClientGUI:
         elif not msg:
             return
         self.input_field.delete(0, tk.END)
+        if msg.startswith("/join"):
+            splitmsg = msg.split(' ')
+            if len(splitmsg) < 2:
+                self.text_area.insert(tk.END, '\n' + "Invalid channel")
+                return
+            self.current_channel = splitmsg[1]
         if msg == "/clear":
             self.text_area.delete('1.0', tk.END)
         elif msg == "/chans":
