@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 from utils.configUtil import get_config
+import utils.channelUtil as channelUtil
 
 def check_command(cmd, client, clients):
     if cmd.startswith('/'):
@@ -64,12 +65,12 @@ def join(client, cmd):
     if channel[0] == '#':
         channel = channel[1:]
     if len(channel) > 0 and len(channel) <= 16:
-        if client.channel == channel:
-            client.send(f"You are already in #{client.channel}")
+        if client.channel.name == channel:
+            client.send(f"You are already in #{channel}")
             return
-        client.say(f"{client.nick} has left #{client.channel}")
-        client.channel = channel
-        client.say(f"{client.nick} has joined #{client.channel}")
+        client.channel.leave(client)
+        client.channel = channelUtil.get_channel(channel)
+        client.channel.join(client)
     else:
         client.send("Invalid channel name")
 
@@ -77,8 +78,7 @@ def me(client, cmd):
     client.say(f"* {client.nick} {cmd[4:]}")
 
 def channels(client, clients, cmd):
-    chans = [c.channel for c in clients]
-    chans = list(dict.fromkeys(chans))
+    chans = [c.name for c in channelUtil.get_channels()]
     splitmsg = cmd.split(' ')
     if len(splitmsg) > 1:
         if splitmsg[1] == "json":
@@ -124,9 +124,9 @@ def away(client, cmd):
         client.send(f"You are now away: {client.away}")
 
 def leave(client, cmd):
-    client.say(f"{client.nick} has left #{client.channel}")
-    client.channel = "general"
-    client.say(f"{client.nick} has joined #{client.channel}")
+    client.channel.leave(client)
+    client.channel = channelUtil.get_channel(get_config()['default_channel'])
+    client.channel.join(client)
 
 def quit(client):
     client.send("Thank you for using our Py-IRC network, We hope to see you again soon!")
