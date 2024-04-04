@@ -1,6 +1,6 @@
-from controller.errorController import log_error
-from controller.configController import get_config
-from controller.commandController import check_command
+from utils.logUtil import log_error
+from utils.configUtil import get_config
+from utils.commandUtil import check_command
 import random
 
 config = get_config()

@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from utils.configUtil import get_config
 
 def check_command(cmd, client, clients):
     if cmd.startswith('/'):
@@ -30,6 +31,8 @@ def check_command(cmd, client, clients):
             help(client)
         elif cmd.startswith('/ping'):
             ping(client)
+        elif cmd.startswith('/version'):
+            client.send("Version: " + get_config()['version'])
         else:
             client.send("Invalid command")
         return True
@@ -37,7 +40,7 @@ def check_command(cmd, client, clients):
         return False
     
 def motd(client):
-    client.send("Welcome to our Py-IRC network!\nPlease type /help for a list of commands within this network\nEnjoy your stay")
+    client.send(f"Welcome to our {get_config()['version']} network!\nPlease type /help for a list of commands within this network\nEnjoy your stay")
 
 def nick(client, cmd, clients):
     splitmsg = cmd.split(' ')
@@ -160,6 +163,7 @@ def help(client):
                 "/ping - Ping the server\n"
                 "/leave - Leave the current channel\n"
                 "/quit - Quit the server\n"
+                "/version - Display the server's Velocity IRC version\n"
                 "/help - Display this help message")
 
 def ping(client):
