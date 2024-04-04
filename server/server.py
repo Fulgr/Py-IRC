@@ -4,6 +4,7 @@ from utils.configUtil import get_config
 from utils.logUtil import log_error, log
 from utils.clientUtil import handle_client
 import modules.logClearModule as log_clear_module
+import modules.initializeChannelsModule as initialize_channels_module
 
 def start_module(module):
     thread = threading.Thread(target=module.start)
@@ -12,6 +13,7 @@ def start_module(module):
 def run_modules():
     log("Running modules")
     start_module(log_clear_module)
+    start_module(initialize_channels_module)
 
 def run_server():
     config = get_config()

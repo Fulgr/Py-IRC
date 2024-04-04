@@ -1,8 +1,16 @@
 from utils.logUtil import log_error
 from utils.configUtil import get_config
+import json
 
 config = get_config()
 channels = []
+
+def save_channel(channel):
+    with open('data/channels.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    data[channel.name] = {"name": channel.name}
+    with open('data/channels.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f)
 
 class Channel:
     def __init__(self, name):
@@ -39,4 +47,5 @@ def get_channel(name):
         if channel.name == name:
             return channel
     c = Channel(name)
+    save_channel(c)
     return c

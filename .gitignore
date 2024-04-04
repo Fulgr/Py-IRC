@@ -1,6 +1,4 @@
 sever/controller/__pycache__
 __pycache__
-server/data/*
-/server/data
 /client/build
 /client/client.spec
