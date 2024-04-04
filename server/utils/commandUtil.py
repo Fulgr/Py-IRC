@@ -108,7 +108,7 @@ def whois(client, cmd, clients):
     nick = cmd.split(' ')[1]
     for c in clients:
         if c.nick == nick:
-            msg = f"{c.nick} is in #{c.channel}"
+            msg = f"{c.nick} is in #{c.channel.name}"
             if c.away and c.away != "":
                 msg += f"\n{c.nick} is currently away: {c.away}"
             client.send(msg)
