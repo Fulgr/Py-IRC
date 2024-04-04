@@ -3,5 +3,5 @@
     "port": 8001,
     "buffer_size": 1024,
     "default_channel": "general",
-    "version": "'Velocity IRC v1.2.0'"
+    "version": "'Velocity IRC v1.2.1'"
 }

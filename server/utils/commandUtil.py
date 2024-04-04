@@ -41,7 +41,7 @@ def check_command(cmd, client, clients):
         return False
     
 def motd(client):
-    client.send(f"Welcome to our {get_config()['version']} network!\nPlease type /help for a list of commands within this network\nEnjoy your stay")
+    client.send(f"Welcome to our {get_config()['version']} network!\nPlease type /help for a list of commands within this network\nEnjoy your stay\n")
 
 def nick(client, cmd, clients):
     splitmsg = cmd.split(' ')
