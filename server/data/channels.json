@@ -1,1 +1,6 @@
-{"general": {"name": "general"}, "test": {"name": "test"}, "ok": {"name": "ok"}, "newchat": {"name": "newchat"}}
+{
+    "help": {"name": "help"},
+    "chat": {"name": "chat"},
+    "chat2": {"name": "chat2"},
+    "shell": {"name": "shell"}
+}
