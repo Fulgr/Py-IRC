@@ -51,7 +51,6 @@ def handle_client(client_socket, addr):
         client = Client(client_socket, addr, nick=f"Guest{random.randint(1, 9999)}")
         clients.append(client)
         client.channel.join(client)
-        client.channel.broadcast(client, f"{client.nick} has joined #{client.channel.name}")
         while True:
             try:
                 msg = client.recv(client.buffer_size)
