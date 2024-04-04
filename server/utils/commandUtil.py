@@ -68,8 +68,14 @@ def join(client, cmd):
         if client.channel.name == channel:
             client.send(f"You are already in #{channel}")
             return
-        client.channel.leave(client)
-        client.channel = channelUtil.get_channel(channel)
+        c = client.channel
+        c.leave(client)
+        r = channelUtil.get_channel(channel)
+        if not r:
+            client.send(f"Channel #{channel} does not exist")
+            client.channel = c
+        else:
+            client.channel = r
         client.channel.join(client)
     else:
         client.send("Invalid channel name")

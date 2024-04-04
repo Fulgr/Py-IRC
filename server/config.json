@@ -3,5 +3,6 @@
     "port": 8001,
     "buffer_size": 1024,
     "default_channel": "general",
-    "version": "'Velocity IRC v1.2.4'"
+    "version": "'Velocity IRC v1.3.0'",
+    "allow_channel_creation": false
 }

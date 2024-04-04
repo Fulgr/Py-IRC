@@ -46,6 +46,9 @@ def get_channel(name):
     for channel in channels:
         if channel.name == name:
             return channel
-    c = Channel(name)
-    save_channel(c)
-    return c
+    if config['allow_channel_creation']:
+        c = Channel(name)
+        save_channel(c)
+        return c
+    else:
+        return False
