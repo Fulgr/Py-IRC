@@ -5,8 +5,6 @@ def protocol(COMMAND, FROM, MSG=None, TO=None, CHANNEL=None):
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "MSG": MSG, "TO": TO})
     elif COMMAND == "MESSAGE":
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "MSG": MSG, "CHANNEL": CHANNEL})
-    elif COMMAND == "LEAVE" or COMMAND == "JOIN":
-        return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "MSG": MSG, "CHANNEL": CHANNEL})
     elif COMMAND == "MOTD":
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "MSG": MSG, "TO": TO})
     elif COMMAND == "NICK":

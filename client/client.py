@@ -6,7 +6,7 @@ import json
 import time
 import os
 
-initial_commands = ["/list json", "/motd"]
+initial_commands = ["/list", "/motd"]
 
 appdatapath = os.getenv('APPDATA') + "\\VelocityClient"
 if not os.path.exists(appdatapath):
