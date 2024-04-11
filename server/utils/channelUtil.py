@@ -33,13 +33,13 @@ class Channel:
 
     def leave(self, client):
         self.clients.remove(client)
-        msg = protocol("NOTICE_LEAVE", "SERVER", f"PART #{self.name}", CHANNEL=self.name)
-        self.broadcast(client, json.dumps(msg))
+        msg = protocol("NOTICE_LEAVE", client.nick, CHANNEL=self.name)
+        self.broadcast(client, msg)
 
     def join(self, client):
         self.clients.append(client)
-        msg = protocol("NOTICE_JOIN", "SERVER", f"JOIN #{self.name}", CHANNEL=self.name)
-        self.broadcast(client, json.dumps(msg))
+        msg = protocol("NOTICE_JOIN", client.nick, CHANNEL=self.name)
+        self.broadcast(client, msg)
 
 def get_channels():
     return channels

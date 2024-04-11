@@ -68,7 +68,7 @@ def nick(client, cmd, clients):
         return
     old_nick = client.nick
     client.nick = nick
-    msg = protocol("NICK", old_nick, f"NICK {old_nick} {client.nick}", CHANNEL=client.channel.name)
+    msg = protocol("NICK", old_nick, client.nick, CHANNEL=client.channel.name)
     client.channel.broadcast(client, msg)
 
 def join(client, cmd):

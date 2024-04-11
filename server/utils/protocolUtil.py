@@ -32,6 +32,10 @@ def protocol(COMMAND, FROM, MSG=None, TO=None, CHANNEL=None):
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
     elif COMMAND == "NOTICE_PONG":
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
+    elif COMMAND == "NOTICE_JOIN":
+        return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "CHANNEL": CHANNEL})
+    elif COMMAND == "NOTICE_LEAVE":
+        return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "CHANNEL": CHANNEL})
     
     elif COMMAND == "ERR_NONICKNAMEGIVEN":
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
