@@ -1,5 +1,6 @@
 from utils.logUtil import log_error
 from utils.configUtil import get_config
+from utils.protocolUtil import protocol
 import json
 
 config = get_config()
@@ -15,7 +16,6 @@ def save_channel(channel):
 class Channel:
     def __init__(self, name):
         self.name = name
-        self.topic = ""
         self.clients = []
         channels.append(self)
 
@@ -33,11 +33,13 @@ class Channel:
 
     def leave(self, client):
         self.clients.remove(client)
-        self.broadcast(client, f"{client.nick} has left #{self.name}")
+        msg = protocol("NOTICE_LEAVE", "SERVER", f"PART #{self.name}", CHANNEL=self.name)
+        self.broadcast(client, json.dumps(msg))
 
     def join(self, client):
         self.clients.append(client)
-        self.broadcast(client, f"{client.nick} has joined #{self.name}")
+        msg = protocol("NOTICE_JOIN", "SERVER", f"JOIN #{self.name}", CHANNEL=self.name)
+        self.broadcast(client, json.dumps(msg))
 
 def get_channels():
     return channels

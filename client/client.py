@@ -179,7 +179,7 @@ class ChatClientGUI:
         if msg == "/clear":
             self.text_area.delete('1.0', tk.END)
         elif msg == "/chans":
-            self.client.send("/list json".encode("utf-8")[:1024])
+            self.client.send("/list".encode("utf-8")[:1024])
             return
         elif msg.startswith("/r"):
             splitmsg = msg.split(' ')

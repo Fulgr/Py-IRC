@@ -3,6 +3,6 @@
     "port": 8001,
     "buffer_size": 1024,
     "default_channel": "chat",
-    "version": "'Velocity IRC v1.3.0'",
+    "version": "'Velocity IRC v1.4.0'",
     "allow_channel_creation": false
 }
