@@ -23,8 +23,8 @@ with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
         initial_commands.append(f"/nick {file['autonick']}")
 
 
-server_ip = "node2.endelon-hosting.de"
-server_port = 34055
+server_ip = "127.0.0.1"
+server_port = 8001
 
 class ChatClientGUI:
     def __init__(self, master):
@@ -132,21 +132,28 @@ class ChatClientGUI:
                 if not data:
                     break
                 msg = data.decode("utf-8")
-                if msg.startswith("/pong"):
-                    ping_time = datetime.datetime.now() - datetime.datetime.strptime(' '.join(msg.split(" ")[1:]), "%Y:%m:%d:%H:%M:%S:%f")
-                    ping_ms = ping_time.total_seconds() * 1000
-                    self.text_area.insert(tk.END, '\n'+"Ping: " + str(round(ping_ms)) + " ms")
-                elif msg.startswith("/channels"):
-                    split = msg.split(" ")
-                    msgunified = ' '.join(split[1:])
-                    chans = json.loads(msgunified)
+                msg = json.loads(msg)
+                if msg['COMMAND'] == 'MESSAGE':
+                    self.text_area.insert(tk.END,'\n' +  f"<{msg['FROM']}> {msg['MSG']}")
+                elif msg['COMMAND'] == 'CHANNELS':
+                    chans = json.loads(msg['MSG'])
                     for widget in self.sidebar.winfo_children():
                         widget.destroy()
                     for chan in chans:
                         button = tk.Button(self.sidebar, text=f"#{chan}", bg=self.channel_bg, fg=self.channel_fg, font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
                         button.pack(fill=tk.X)
+                elif msg['COMMAND'] == 'NOTICE_JOIN':
+                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} joined {msg['CHANNEL']}")
+                elif msg['COMMAND'] == 'NOTICE_LEAVE':
+                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} left {msg['CHANNEL']}")
+                elif msg['COMMAND'] == 'MOTD':
+                    self.text_area.insert(tk.END, '\n' + msg['MSG'])
+                elif msg['COMMAND'] == 'NICK':
+                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} changed their nickname to {msg['MSG']}")
+                elif msg['COMMAND'] == 'PRIVMSG':
+                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} >> {msg['TO']}: {msg['MSG']}")
                 else:
-                    self.text_area.insert(tk.END,'\n' +  msg)
+                    self.text_area.insert(tk.END, '\n' + json.dumps(msg))
                 self.text_area.see(tk.END)
         except Exception as e:
             print(f"Error: {e}")
@@ -215,7 +222,6 @@ class ChatClientGUI:
         elif msg.startswith("/networks"):
             self.text_area.insert(tk.END, '\n\n' + "Available networks:")
             self.text_area.insert(tk.END, '\n' + "127.0.0.1:8001 - Localhost")
-            self.text_area.insert(tk.END, '\n' + "node2.endelon-hosting.de:34055 - Endolon test server\n")
         elif msg.startswith("/themes"):
             self.text_area.insert(tk.END, '\n\n' + "Available themes:")
             self.text_area.insert(tk.END, '\n' + "dark - Dark theme")
