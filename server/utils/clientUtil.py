@@ -20,6 +20,7 @@ class Client:
         self.ignore = []
 
     def send(self, data):
+        print(data)
         try:
             self.client_socket.send(data.encode('utf-8'))
         except Exception as e:
@@ -34,12 +35,11 @@ class Client:
         except Exception as e:
             log_error(e)
 
-    def dm(self, client, nick, msg):
+    def dm(self, nick, msg):
         for c in clients:
             if c.nick == nick:
-                if not c.is_ignored(client.addr):
-                    msg = protocol("PRIVMSG", client.nick, msg, TO=nick)
-                    c.send(json.dumps(msg))
+                if not c.is_ignored(self.addr):
+                    c.send(msg)
 
     def leave(self):
         self.client_socket.close()

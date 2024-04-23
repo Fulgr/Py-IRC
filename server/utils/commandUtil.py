@@ -38,7 +38,8 @@ def check_command(cmd, client, clients):
         elif cmd.startswith('/version'):
             client.send("Version: " + get_config()['version'])
         else:
-            client.send("Invalid command")
+            msg = protocol("ERR_INVALIDCOMMAND", "SERVER", TO=client.nick)
+            client.send(msg)
         return True
     else:
         return False
@@ -126,7 +127,7 @@ def dm(client, cmd):
     nick = parts[1]
     msg = " ".join(parts[2:])
     msg = protocol("PRIVMSG", client.nick, msg, TO=nick)
-    client.dm(msg)
+    client.dm(nick, msg)
     client.send(msg)
 
 def whois(client, cmd, clients):

@@ -128,35 +128,54 @@ class ChatClientGUI:
             initial_messages_thread = threading.Thread(target=self.send_initial_commands)
             initial_messages_thread.start()
             while True:
-                data = self.client.recv(1024)
-                if not data:
-                    break
-                msg = data.decode("utf-8")
-                msg = json.loads(msg)
-                if msg['COMMAND'] == 'MESSAGE':
-                    self.text_area.insert(tk.END,'\n' +  f"<{msg['FROM']}> {msg['MSG']}")
-                elif msg['COMMAND'] == 'CHANNELS':
-                    chans = json.loads(msg['MSG'])
-                    for widget in self.sidebar.winfo_children():
-                        widget.destroy()
-                    for chan in chans:
-                        button = tk.Button(self.sidebar, text=f"#{chan}", bg=self.channel_bg, fg=self.channel_fg, font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
-                        button.pack(fill=tk.X)
-                elif msg['COMMAND'] == 'NOTICE_JOIN':
-                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} joined {msg['CHANNEL']}")
-                elif msg['COMMAND'] == 'NOTICE_LEAVE':
-                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} left {msg['CHANNEL']}")
-                elif msg['COMMAND'] == 'MOTD':
-                    self.text_area.insert(tk.END, '\n' + msg['MSG'])
-                elif msg['COMMAND'] == 'NICK':
-                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} changed their nickname to {msg['MSG']}")
-                elif msg['COMMAND'] == 'PRIVMSG':
-                    self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} >> {msg['TO']}: {msg['MSG']}")
-                else:
-                    self.text_area.insert(tk.END, '\n' + json.dumps(msg))
-                self.text_area.see(tk.END)
+                try:
+                    data = self.client.recv(1024)
+                    if not data:
+                        break
+                    msg = data.decode("utf-8")
+                    msg = json.loads(msg)
+                    if msg['COMMAND'] == 'MESSAGE':
+                        self.text_area.insert(tk.END,'\n' +  f"<{msg['FROM']}> {msg['MSG']}")
+                    elif msg['COMMAND'] == 'CHANNELS':
+                        chans = json.loads(msg['MSG'])
+                        for widget in self.sidebar.winfo_children():
+                            widget.destroy()
+                        for chan in chans:
+                            button = tk.Button(self.sidebar, text=f"#{chan}", bg=self.channel_bg, fg=self.channel_fg, font=("Arial", 8), command=lambda chan=chan: self.send_message(f"/join {chan}"))
+                            button.pack(fill=tk.X)
+                    elif msg['COMMAND'] == 'NOTICE_JOIN':
+                        self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} joined {msg['CHANNEL']}")
+                    elif msg['COMMAND'] == 'NOTICE_LEAVE':
+                        self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} left {msg['CHANNEL']}")
+                    elif msg['COMMAND'] == 'MOTD' or msg['COMMAND'] == 'IGNORING' or msg['COMMAND'] == 'NOLONGERIGNORING':
+                        self.text_area.insert(tk.END, '\n' + msg['MSG'])
+                    elif msg['COMMAND'] == 'NICK':
+                        self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} changed their nickname to {msg['MSG']}")
+                    elif msg['COMMAND'] == 'PRIVMSG':
+                        self.text_area.insert(tk.END, '\n' + f"{msg['FROM']} >> {msg['TO']}: {msg['MSG']}")
+                    elif msg['COMMAND'] == 'ERR_INVALIDCOMMAND':
+                        self.text_area.insert(tk.END, '\n' + "Invalid command")
+                    elif msg['COMMAND'] == 'HELP' or msg['COMMAND'] == 'WHOIS':
+                        response = msg['MSG'].split('\n')
+                        for line in response:
+                            self.text_area.insert(tk.END, '\n' + line)
+                    elif msg['COMMAND'] == 'ME':
+                        self.text_area.insert(tk.END, '\n' + f"* {msg['FROM']} {msg['MSG']}")
+                    elif msg['COMMAND'] == 'NOTICE_PONG':
+                        pass
+                    elif msg['COMMAND'] == 'AWAY':
+                        self.text_area.insert(tk.END, '\n' + f"{msg['TO']} is away: {msg['MSG']}")
+                    elif msg['COMMAND'] == 'ERR_NICKNAMEINUSE':
+                        self.text_area.insert(tk.END, '\n' + "Nickname is already in use")
+                    elif msg['COMMAND'] == 'ERR_ALREADYINCHANNEL':
+                        self.text_area.insert(tk.END, '\n' + "You are already in that channel")
+                    else:
+                        self.text_area.insert(tk.END, '\n' + json.dumps(msg))
+                    self.text_area.see(tk.END)
+                except Exception as e:
+                    insert(self, f"1:{e}")
         except Exception as e:
-            print(f"Error: {e}")
+            insert(self, f"2:{e}")
 
     def send_message(self, event=None):
         msg = self.input_field.get()
@@ -257,5 +276,8 @@ def run_gui():
     root = tk.Tk()
     app = ChatClientGUI(root)
     root.mainloop()
+
+def insert(self, msg):
+    self.text_area.insert(tk.END, '\n' + msg)
 
 run_gui()

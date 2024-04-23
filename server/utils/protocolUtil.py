@@ -55,3 +55,5 @@ def protocol(COMMAND, FROM, MSG=None, TO=None, CHANNEL=None):
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
     elif COMMAND == "ERR_NOSUCHNICKNAME":
         return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
+    elif COMMAND == "ERR_INVALIDCOMMAND":
+        return json.dumps({"COMMAND": COMMAND, "FROM": FROM, "TO": TO})
