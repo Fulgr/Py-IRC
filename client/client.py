@@ -23,8 +23,8 @@ with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
         initial_commands.append(f"/nick {file['autonick']}")
 
 
-server_ip = "127.0.0.1"
-server_port = 8001
+server_ip = "0.tcp.eu.ngrok.io"
+server_port = 13004
 
 class ChatClientGUI:
     def __init__(self, master):
@@ -118,10 +118,19 @@ class ChatClientGUI:
         receive_thread.daemon = True
         receive_thread.start()
 
+        ping_thread = threading.Thread(target=self.ping)
+        ping_thread.daemon = True
+        ping_thread.start()
+
         self.text_area.insert(tk.END, f"Connected to {server_ip}:{server_port}\nPlease use /lhelp for a list of client commands\n")
 
     def close_connection(self):
         self.client.close()
+
+    def ping(self):
+        while True:
+            self.client.send("/ping".encode("utf-8")[:1024])
+            time.sleep(60*3)
 
     def receive_messages(self):
         try:
