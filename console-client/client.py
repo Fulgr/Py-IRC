@@ -95,6 +95,8 @@ class Client:
                 self.last_ping = datetime.datetime.now()
             elif data.startswith('/r'):
                 data = data.replace('/r', f'/msg {self.last_dm}')
+            elif data.strip() == '':
+                return
             self.client.send(data.encode("utf-8"))
         except Exception as e:
             print(f"3:{e}")
@@ -104,6 +106,8 @@ while isRunning:
     client.connect()
     while client.active:
         msg = input()
+        sys.stdout.write("\033[F")
+        print("                                                                       ")
         sys.stdout.write("\033[F")
         client.send(msg)
         if msg == '/quit':
