@@ -23,8 +23,8 @@ with open(f"{appdatapath}/config.json", "r", encoding="utf-8") as f:
         initial_commands.append(f"/nick {file['autonick']}")
 
 
-server_ip = "5.tcp.eu.ngrok.io"
-server_port = 19582
+server_ip = "127.0.0.1"
+server_port = 8001
 
 class ChatClientGUI:
     def __init__(self, master):
