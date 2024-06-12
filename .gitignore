@@ -2,5 +2,4 @@ sever/controller/__pycache__
 __pycache__
 /client/build
 /client/client.spec
-/server/data/error.log
-/server/data/log.log
+*.log
