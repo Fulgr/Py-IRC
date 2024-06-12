@@ -1,9 +1,8 @@
-from utils.logUtil import log_error
-from utils.configUtil import get_config
+from utils.logUtil import error
+from utils.configUtil import config
 from utils.protocolUtil import protocol
 import json
 
-config = get_config()
 channels = []
 
 def save_channel(channel):
@@ -28,7 +27,7 @@ class Channel:
                     if not c.is_ignored(client.addr):
                         c.send(msg)
             except Exception as e:
-                log_error(e)
+                error(e)
                 c.leave()
 
     def leave(self, client):

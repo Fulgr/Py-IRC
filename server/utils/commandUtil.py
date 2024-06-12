@@ -1,10 +1,8 @@
 from datetime import datetime
 import json
-from utils.configUtil import get_config
+from utils.configUtil import config
 import utils.channelUtil as channelUtil
 from utils.protocolUtil import protocol
-
-config = get_config()
 
 def check_command(cmd, client, clients):
     if cmd.startswith('/'):
@@ -36,7 +34,7 @@ def check_command(cmd, client, clients):
         elif cmd.startswith('/ping'):
             ping(client)
         elif cmd.startswith('/version'):
-            client.send("Version: " + get_config()['version'])
+            client.send("Version: " + config['version'])
         else:
             msg = protocol("ERR_INVALIDCOMMAND", "SERVER", TO=client.nick)
             client.send(msg)
@@ -164,7 +162,7 @@ def away(client, cmd):
 
 def leave(client, cmd):
     client.channel.leave(client)
-    client.channel = channelUtil.get_channel(get_config()['default_channel'])
+    client.channel = channelUtil.get_channel(config['default_channel'])
     client.channel.join(client)
 
 def quit(client):

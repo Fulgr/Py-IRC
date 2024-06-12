@@ -1,12 +1,11 @@
-from utils.logUtil import log_error
-from utils.configUtil import get_config
+from utils.logUtil import error
+from utils.configUtil import config
 from utils.commandUtil import check_command
 import utils.channelUtil as channelUtil
 from utils.protocolUtil import protocol
 import random
 import json
 
-config = get_config()
 clients = []
 
 class Client:
@@ -24,7 +23,7 @@ class Client:
         try:
             self.client_socket.send(data.encode('utf-8'))
         except Exception as e:
-            log_error(e)
+            error(e)
 
     def is_ignored(self, addr):
         return addr in self.ignore
@@ -33,7 +32,7 @@ class Client:
         try:
             return self.client_socket.recv(length).decode('utf-8')
         except Exception as e:
-            log_error(e)
+            error(e)
 
     def dm(self, nick, msg):
         for c in clients:
@@ -68,11 +67,11 @@ def handle_client(client_socket, addr):
                     elif cmd != True:
                         client.say(cmd)
             except Exception as e:
-                log_error(e)
+                error(e)
                 client.leave()
                 break
     except Exception as e:
-        log_error(e)
+        error(e)
     finally:
         if client in clients:
             client.leave()

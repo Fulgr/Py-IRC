@@ -1,7 +1,7 @@
 import socket
 import threading
-from utils.configUtil import get_config
-from utils.logUtil import log_error, log
+from utils.configUtil import config
+from utils.logUtil import error, log
 from utils.clientUtil import handle_client
 import modules.logClearModule as log_clear_module
 import modules.initializeChannelsModule as initialize_channels_module
@@ -16,7 +16,6 @@ def run_modules():
     start_module(initialize_channels_module)
 
 def run_server():
-    config = get_config()
     try:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         log("Socket created")
@@ -33,7 +32,7 @@ def run_server():
             thread.start()
             log(f"Started new thread to handle client {addr[0]}:{addr[1]}")
     except Exception as e:
-        log_error(e)
+        error(e)
     finally:
         server.close()
         log("Server closed")
